@@ -1,0 +1,43 @@
+
+image: maven:latest
+
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - test
+  - package
+  - deploy
+  
+
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  tags:
+    - group04_runner
+  script:
+    - echo "Compiling the code "
+    - cd accomatch
+    - mvn clean install
+
+test-job:   # This job runs in the test stage.
+  stage: test    # It only starts when the job in the build stage completes successfully.
+  script:
+    - echo "Running unit tests... "
+    - cd accomatch
+    - mvn test
+
+package-job:   # This job runs in the package stage.
+  stage: package    
+  script:
+    - echo "Packaging the code "
+    - cd accomatch
+    - mvn package
+
+deploy-job:
+  stage: deploy
+  script:
+    - echo "Delpoy the master/main branch"
+    - curl -s "https://api.render.com/deploy/srv-ci5iiltgkuvh0tm5ue20?key=IrqLK9wDkMU"
+  only:
+    - main
+  
+
+
